@@ -10,6 +10,10 @@ const task = Mongoose.Schema({
     type: String,
     required: 'title is required',
   },
+  type: {
+    type: String,
+    required: 'type is required',
+  },
   shortDescription: {
     type: String,
   },

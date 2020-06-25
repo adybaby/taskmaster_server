@@ -22,6 +22,14 @@ const interest = Mongoose.Schema({
     type: String,
     required: 'comments is required',
   },
+  startDate: {
+    type: Date,
+    required: 'startDate is required',
+  },
+  endDate: {
+    type: Date,
+    required: 'endDate is required',
+  },
   createdDate: {
     type: Date,
     default: Date.now,

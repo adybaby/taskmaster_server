@@ -15,6 +15,15 @@ const ENTITIES = {
   vacancy: Vacancy,
 };
 
+/**
+ * Pass a JSON object with:
+ * entity: Either "contribution", "interest", "skill", "user", or "vacancy"
+ * action: Either "find", "update", or "delete"
+ * upgradeOrQuery:
+ *   - for "find" pass a filter object {field: filterParam} or {} to return all entities of the given entity
+ *   - for "delete" pass only the id of the item to delete
+ *   - for "update" pass the object containing field updates.  if the id of the update already exists, it will be updated, otherwise it will be created.
+ */
 export const query = (req, res) => {
   const entity = ENTITIES[req.body.entity];
   const udpateOrQuery = req.body.updateOrQuery;
@@ -51,7 +60,7 @@ export const query = (req, res) => {
       entity.findOneAndUpdate({ id: udpateOrQuery.id }, udpateOrQuery, updateOptions, callback);
       break;
     case 'delete':
-      entity.deleteOne({ id: udpateOrQuery.id }, udpateOrQuery, updateOptions, callback);
+      entity.deleteOne({ id: udpateOrQuery }, callback);
       break;
     default:
       return res.status(500).send('No operations matched the action: ' + req.body.action);
