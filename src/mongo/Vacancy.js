@@ -5,38 +5,39 @@ const vacancy = Mongoose.Schema({
     type: String,
     index: true,
     unique: true,
+    required: 'id is a required field for Vacancy',
   },
   taskId: {
     type: String,
-    required: 'id is required',
+    required: 'taskId is a required field for Vacancy',
   },
   recruiterId: {
     type: String,
-    required: 'id is required',
+    required: 'recruiterId is a required field for Vacancy',
   },
   priority: {
     type: String,
-    required: 'id is required',
+    required: 'priority is a required field for Vacancy',
   },
   skillId: {
     type: String,
-    required: 'id is required',
+    required: 'skillId is a required field for Vacancy',
   },
   role: {
     type: String,
-    required: 'id is required',
+    required: 'role is a required field for Vacancy',
   },
   status: {
     type: String,
-    required: 'id is required',
+    required: 'status is a required field for Vacancy',
   },
   startDate: {
     type: Date,
-    required: 'id is required',
+    required: 'startDate is a required field for Vacancy',
   },
   endDate: {
     type: Date,
-    required: 'id is required',
+    required: 'endDate is a required field for Vacancy',
   },
   comments: {
     type: String,

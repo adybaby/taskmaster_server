@@ -5,10 +5,11 @@ const skill = Mongoose.Schema({
     type: String,
     index: true,
     unique: true,
+    required: 'id is a required field for Skill',
   },
   title: {
     type: String,
-    required: 'title is required',
+    required: 'title is a required field for Skill',
   },
   createdDate: {
     type: Date,

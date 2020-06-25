@@ -5,18 +5,19 @@ const contributionLink = Mongoose.Schema({
     type: String,
     index: true,
     unique: true,
+    required: 'id is a required field for ContributionLink',
   },
   contributorId: {
     type: String,
-    required: 'contributorId required',
+    required: 'contributorId is a required field for ContributionLink',
   },
   contributeeId: {
     type: String,
-    required: 'contributeeId is required',
+    required: 'contributeeId is a required field for ContributionLink',
   },
   contribution: {
     type: String,
-    required: 'contribution field is required',
+    required: 'contribution is a required field for ContributionLink',
   },
   createdDate: {
     type: Date,

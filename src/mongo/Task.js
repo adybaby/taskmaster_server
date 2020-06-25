@@ -5,14 +5,15 @@ const task = Mongoose.Schema({
     type: String,
     index: true,
     unique: true,
+    required: 'id is a required field for Task',
   },
   title: {
     type: String,
-    required: 'title is required',
+    required: 'title is a required field for Task',
   },
   type: {
     type: String,
-    required: 'type is required',
+    required: 'type is a required field for Task',
   },
   shortDescription: {
     type: String,
@@ -28,7 +29,7 @@ const task = Mongoose.Schema({
   },
   priority: {
     type: String,
-    required: 'priority is required',
+    required: 'priority is a required field for Task',
   },
   hypotheses: {
     type: String,
