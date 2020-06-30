@@ -47,8 +47,28 @@ export const query = (req, res) => {
     useFindAndModify: false,
   };
 
+  const log = (err) => {
+    console.log(
+      err == null ? 'Failed to perform query' : 'Successfully performed ' + action + ' query'
+    );
+    console.log('Action');
+    console.log(action);
+    console.log('Entity');
+    console.log(entity);
+    console.log('UpdateOrQuery');
+    console.log(udpateOrQuery);
+    console.log('Errors: ' + err == null ? 'None' : err);
+    console.log('\n\n\n');
+  };
+
   const callback = (err, result) => {
-    if (err) return res.status(500).json(err);
+    if (err) {
+      log(err);
+      return res.status(500).json(err);
+    }
+    if (action !== 'find') {
+      log();
+    }
     return res.json(result);
   };
 
