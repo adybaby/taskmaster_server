@@ -51,14 +51,14 @@ export const query = (req, res) => {
     console.log(
       err == null ? 'Failed to perform query' : 'Successfully performed ' + action + ' query'
     );
-    console.log('Action');
+    console.log('Action', action);
     console.log(action);
-    console.log('Entity');
+    console.log('Entity', entity);
     console.log(entity);
-    console.log('UpdateOrQuery');
+    console.log('UpdateOrQuery', udpateOrQuery);
     console.log(udpateOrQuery);
-    console.log('Errors: ' + err == null ? 'None' : err);
-    console.log('\n\n\n');
+    console.log('Errors: ', err == null ? 'None' : err);
+    console.log('\n\n');
   };
 
   const callback = (err, result) => {
