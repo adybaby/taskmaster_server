@@ -21,7 +21,6 @@ const interest = Mongoose.Schema({
   },
   comments: {
     type: String,
-    required: 'comments is a required field for Interest',
   },
   startDate: {
     type: Date,

@@ -1,0 +1,9 @@
+{
+  "listenPort": "3000",
+  "mongo": {
+    "prefix": "mongodb+srv://taskmaster",
+    "domain": "cluster0-svrfx.mongodb.net",
+    "params": "test?retryWrites=true&w=majority"
+  },
+  "debugLogging": true
+}

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Task Master server",
   "main": "src\\server.js",
+  "module": "src\\main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --exec babel-node src\\server.js"
@@ -12,6 +13,8 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "date-fns": "^2.15.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "mongoose": "^5.9.18",
     "nodemon": "^2.0.4",
@@ -28,5 +31,13 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-prettier": "^3.1.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adybaby/taskmaster_server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adybaby/taskmaster_server/issues"
+  },
+  "homepage": "https://github.com/adybaby/taskmaster_server#readme"
 }

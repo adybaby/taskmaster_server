@@ -1,14 +1,46 @@
-import { query } from './mongo/MongoInterface';
+import { query } from './db/Db';
 
 /**
- * Pass a JSON object with:
- * entity: Either "contribution", "interest", "skill", "user", or "vacancy"
- * action: Either "find", "update", or "delete"
- * upgradeOrQuery:
- *   - for "find" pass a filter object {field: filterParam} or {} to return all entities of the given entity
- *   - for "delete" pass only the id of the item to delete
- *   - for "update" pass the object containing field updates.  if the id of the update already exists, it will be updated, otherwise it will be created.
+Post a JSON string in the BODY as follows:
+
+Get all task summaries..
+action: summaries
+
+Get a task map..
+action: map
+
+Get filtered chart data..
+action: chart
+params: { filterSkills:[id], filterDateRange:{startDate, endDate} }
+
+Get an expanded user record of the given id..
+action: user
+id
+
+Get an expanded task record of the given id..
+action: task
+id
+
+Get all entities of a given type..
+action: all
+type: task|vacancy|skill|interest|contribution|user
+
+Get one entity of a given type with given id...
+action: one
+type: task|vacancy|skill|interest|contribution|user
+id
+
+Upsert an entity of the given type with an id specified in params..
+action: upsert
+type: task|vacancy|skill|interest|contribution|user
+params: {id, ... }
+
+Delete an entity of the given type with the given id
+action: delete
+type: task|vacancy|skill|interest|contribution|user
+id
  */
+
 module.exports = function routes(app) {
   app.route('/query').post(query);
 };

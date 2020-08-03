@@ -29,7 +29,6 @@ const task = Mongoose.Schema({
   },
   priority: {
     type: String,
-    required: 'priority is a required field for Task',
   },
   hypotheses: {
     type: String,

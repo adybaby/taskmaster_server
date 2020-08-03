@@ -3,19 +3,18 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import routes from './Routes';
 import cors from 'cors';
+import config from './config.json';
 
 const app = express();
-const port = process.env.PORT || 3000;
-
-// env
-const mongoPwd = process.env.MONGO_ATLAS_PWD;
 
 // mongo host
-const mongoAtlasHost = `mongodb+srv://taskmaster:${mongoPwd}@cluster0-svrfx.mongodb.net/test?retryWrites=true&w=majority`;
+const { prefix, domain, params } = config.mongo;
+const password = process.env.MONGO_ATLAS_PWD;
+const mongoHost = `${prefix}:${password}@${domain}/${params}`;
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
-mongoose.connect(mongoAtlasHost, {
+mongoose.connect(mongoHost, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
@@ -30,4 +29,4 @@ app.use(bodyParser.json());
 routes(app);
 
 // start
-app.listen(port);
+app.listen(config.listenPort);
