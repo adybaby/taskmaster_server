@@ -2,21 +2,40 @@ import { TYPES } from './Types';
 import User from './schema/User';
 import Interest from './schema/Interest';
 import * as logger from './util/Logger';
+import { formatUserName } from './util/Users';
 
-export const expandUser = (cache, user) => ({
-  ...user,
-  skills: user.skills.map((userSkillId) => ({
-    id: userSkillId,
-    title: cache.entities(TYPES.SKILL).find((s) => s.id === userSkillId).title,
-  })),
-  authored: cache
-    .entities(TYPES.TASK)
-    .filter((t) => t.createdBy === user.id)
-    .map((authoredTask) => ({
-      id: authoredTask.id,
-      title: authoredTask.title,
-    })),
-  signedUp: cache
+const getActions = (cache, user) => {
+  const actions = [];
+
+  cache
+    .entities(TYPES.VACANCY)
+    .filter((v) => v.recruiterId === user.id)
+    .forEach((vacancy) => {
+      cache
+        .entities(TYPES.INTEREST)
+        .filter(
+          (i) => i.vacancyId === vacancy.id && i.status !== 'ACCEPTED' && i.status !== 'DECLINED'
+        )
+        .forEach((interestForVacancy) => {
+          const interestedUser = cache
+            .entities(TYPES.USER)
+            .find((u) => u.id === interestForVacancy.userId);
+          const skill = cache.entities(TYPES.SKILL).find((s) => s.id === vacancy.skillId);
+          const interestedInTask = cache.entities(TYPES.TASK).find((t) => t.id === vacancy.taskId);
+          const status =
+            interestForVacancy.status === 'APPLYING'
+              ? 'has applied for'
+              : 'wants to speak to you about';
+          const vacancyInfo = 'the ' + skill.title + ' role for ' + interestedInTask.title;
+          const description = formatUserName(interestedUser) + ' ' + status + ' ' + vacancyInfo;
+          actions.push({ taskId: vacancy.taskId, description });
+        });
+    });
+  return actions;
+};
+
+const getSignedUp = (cache, user) =>
+  cache
     .entities(TYPES.INTEREST)
     .filter((i) => i.userId === user.id)
     .map((thisInterest) => {
@@ -36,7 +55,23 @@ export const expandUser = (cache, user) => ({
         startDate: thisInterest.startDate,
         endDate: thisInterest.endDate,
       };
-    }),
+    });
+
+export const expandUser = (cache, user) => ({
+  ...user,
+  skills: user.skills.map((userSkillId) => ({
+    id: userSkillId,
+    title: cache.entities(TYPES.SKILL).find((s) => s.id === userSkillId).title,
+  })),
+  authored: cache
+    .entities(TYPES.TASK)
+    .filter((t) => t.createdBy === user.id)
+    .map((authoredTask) => ({
+      id: authoredTask.id,
+      title: authoredTask.title,
+    })),
+  signedUp: getSignedUp(cache, user),
+  actions: getActions(cache, user),
 });
 
 export const deleteUser = (cache, id) =>
