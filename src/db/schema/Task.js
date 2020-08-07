@@ -48,12 +48,17 @@ const task = Mongoose.Schema({
   cost: {
     type: String,
   },
+  editors: {
+    type: Array,
+    required: 'editors is a required field for Task',
+  },
   createdDate: {
     type: Date,
     default: Date.now,
   },
   createdBy: {
     type: String,
+    required: 'createdBy is a required field for Task',
   },
   modifiedDate: {
     type: Date,
@@ -61,6 +66,7 @@ const task = Mongoose.Schema({
   },
   modifiedBy: {
     type: String,
+    required: 'modifiedBy is a required field for Task',
   },
 });
 

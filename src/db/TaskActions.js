@@ -50,6 +50,10 @@ export const expandTask = (cache, task) => {
       .map((v) => expandVacancy(cache, v)),
     contributions: getLinks(task.id, 'contributeeId', 'contributorId'),
     contributesTo: getLinks(task.id, 'contributorId', 'contributeeId'),
+    editors: task.editors.map((id) => ({
+      id,
+      userName: formatUserName(cache.entities(TYPES.USER).find((u) => u.id === id)),
+    })),
   };
 };
 

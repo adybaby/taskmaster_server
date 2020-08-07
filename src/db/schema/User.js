@@ -15,6 +15,10 @@ const user = Mongoose.Schema({
     type: String,
     required: 'lastName is a required field for User',
   },
+  emailAddress: {
+    type: String,
+    required: 'emailaddress is a required field for User',
+  },
   bio: {
     type: String,
   },
@@ -30,6 +34,18 @@ const user = Mongoose.Schema({
   createdDate: {
     type: Date,
     default: Date.now,
+  },
+  createdBy: {
+    type: String,
+    required: 'createdBy is a required field for ContributionLink',
+  },
+  modifiedDate: {
+    type: Date,
+    default: Date.now,
+  },
+  modifiedBy: {
+    type: String,
+    required: 'modifiedBy is a required field for ContributionLink',
   },
 });
 

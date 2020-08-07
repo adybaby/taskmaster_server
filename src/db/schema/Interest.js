@@ -34,6 +34,18 @@ const interest = Mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  createdBy: {
+    type: String,
+    required: 'createdBy is a required field for ContributionLink',
+  },
+  modifiedDate: {
+    type: Date,
+    default: Date.now,
+  },
+  modifiedBy: {
+    type: String,
+    required: 'modifiedBy is a required field for ContributionLink',
+  },
 });
 
 export default Mongoose.model('interest', interest);
