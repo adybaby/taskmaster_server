@@ -30,6 +30,7 @@ export const expandTask = (cache, task) => {
       .map((c) => {
         const linkedTask = cache.entities(TYPES.TASK).find((t) => t.id === c[secondField]);
         return {
+          _id: c.id,
           id: linkedTask.id,
           title: linkedTask.title,
           type: linkedTask.type,
@@ -50,7 +51,7 @@ export const expandTask = (cache, task) => {
       .map((v) => expandVacancy(cache, v)),
     contributions: getLinks(task.id, 'contributeeId', 'contributorId'),
     contributesTo: getLinks(task.id, 'contributorId', 'contributeeId'),
-    editors: task.editors.map((id) => ({
+    editorNames: task.editors.map((id) => ({
       id,
       userName: formatUserName(cache.entities(TYPES.USER).find((u) => u.id === id)),
     })),
@@ -137,7 +138,7 @@ export const deleteTask = (cache, id) =>
             .entities(TYPES.VACANCY)
             .filter((v) => v.taskId === id)
             .reduce((newInterests, v) => newInterests.filter((i) => i.vacancyId !== v.id), [
-              ...cache.etnries(TYPES.INTEREST).entities,
+              ...cache.entities(TYPES.INTEREST).entities,
             ])
         );
         resolve();

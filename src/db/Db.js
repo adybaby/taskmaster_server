@@ -47,7 +47,7 @@ export const query = (req, res) => {
 
           if (
             typeof fields.params !== 'undefined' &&
-            (fields.params === null || fields.params.id === null)
+            (fields.params === null || (!Array.isArray(fields.params) && fields.params.id === null))
           ) {
             msgs.push("'params.id'");
           }
@@ -97,6 +97,24 @@ export const query = (req, res) => {
               logger.debug('Retrieving task summaries..');
               const response = cache.entities(TYPES.TASK).map((t) => summariseTask(cache, t));
               logger.debug('Responding with ' + response.length + ' task summaries.');
+              res.json(response);
+            } catch (e) {
+              logger.error(e);
+              errorResponse(e);
+            }
+
+            break;
+          case ACTIONS.GET_TAGS:
+            try {
+              logger.debug('Retrieving tags..');
+              const tags = new Set();
+              cache.entities(TYPES.TASK).forEach((task) => {
+                task.tags.forEach((tag) => {
+                  tags.add(tag);
+                });
+              });
+              const response = [...tags].sort();
+              logger.debug('Responding with ' + response.length + ' tags.');
               res.json(response);
             } catch (e) {
               logger.error(e);
@@ -215,6 +233,28 @@ export const query = (req, res) => {
                       newElement
                     );
                     res.json(newElement);
+                  })
+                  .catch((e) => {
+                    logger.error(e);
+                    errorResponse(e);
+                  });
+              }
+            } catch (e) {
+              logger.error(e);
+              errorResponse(e);
+            }
+            break;
+          case ACTIONS.UPSERT_MANY:
+            try {
+              if (haveParams({ type, params })) {
+                logger.debug('Upserting ' + type.id + ' with ' + params.length + ' new documents');
+                Promise.all(params.map((doc) => cache.upsert(doc, type)))
+                  .then((newElements) => {
+                    logger.debug(
+                      'Upserted ' + type.id + ' with ' + newElements.length + ' new documents',
+                      newElements
+                    );
+                    res.json(newElements);
                   })
                   .catch((e) => {
                     logger.error(e);

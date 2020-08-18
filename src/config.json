@@ -5,5 +5,5 @@
     "domain": "cluster0-svrfx.mongodb.net",
     "params": "test?retryWrites=true&w=majority"
   },
-  "debugLogging": false
+  "debugLogging": true
 }

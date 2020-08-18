@@ -35,6 +35,11 @@ action: upsert
 type: task|vacancy|skill|interest|contribution|user
 params: {id, ... }
 
+Upsert many entities matching the ids of the provided entities of the provided type
+action: upsertMany
+type: task|vacancy|skill|interest|contribution|user
+params: [{id, ... }]
+
 Delete an entity of the given type with the given id
 action: delete
 type: task|vacancy|skill|interest|contribution|user
