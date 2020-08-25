@@ -2,6 +2,7 @@ import { TYPES } from './Types';
 import Task from './schema/Task';
 import Vacancy from './schema/Vacancy';
 import Interest from './schema/Interest';
+import ContributionLink from './schema/ContributionLink';
 import { expandVacancy } from './VacancyActions';
 import { formatDate } from './util/Dates';
 import { capitalize } from './util/String';
@@ -117,7 +118,7 @@ export const deleteTask = (cache, id) =>
       Task.deleteOne({ id }),
       Vacancy.deleteMany({ taskId: id }),
       Interest.deleteMany({
-        $or: cache[TYPES.VACANCY].entities.map((v) => ({ vacancyId: v.id })),
+        $or: cache.entities(TYPES.VACANCY).map((v) => ({ vacancyId: v.id })),
       }),
       ContributionLink.deleteMany({
         $or: [{ contibutorId: id }, { contributeeId: id }],
@@ -138,13 +139,13 @@ export const deleteTask = (cache, id) =>
             .entities(TYPES.VACANCY)
             .filter((v) => v.taskId === id)
             .reduce((newInterests, v) => newInterests.filter((i) => i.vacancyId !== v.id), [
-              ...cache.entities(TYPES.INTEREST).entities,
+              ...cache.entities(TYPES.INTEREST),
             ])
         );
         resolve();
       })
       .catch((e) => {
         logger.error(e);
-        reject(new Error('Could not delete task with id ' + id));
+        reject(new Error('Could not delete task with id ' + id + '. ' + e.message));
       });
   });
