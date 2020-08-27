@@ -31,6 +31,9 @@ const user = Mongoose.Schema({
   disabledHints: {
     type: Array,
   },
+  permissions: {
+    type: Array,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
