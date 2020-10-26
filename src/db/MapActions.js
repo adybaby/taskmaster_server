@@ -55,18 +55,20 @@ const getContributesTo = (task, tasks, contributionLinks) => {
 
 export const getMap = (cache) => {
   const tasks = cache.entities(TYPES.TASK);
+  const drivers = tasks.filter((task) => task.type === 'DRIVER');
   const contributionLinks = cache.entities(TYPES.CONTRIBUTION_LINK);
 
   const tasksWithLinks = [];
 
-  for (let index = 0; index < tasks.length; index++) {
-    const task = tasks[index];
+  for (let index = 0; index < drivers.length; index++) {
+    const driver = drivers[index];
     tasksWithLinks.push({
-      id: task.id,
-      title: task.title,
-      type: task.type,
-      contributions: getContributions(task, tasks, contributionLinks),
-      contributesTo: getContributesTo(task, tasks, contributionLinks),
+      id: driver.id,
+      title: driver.title,
+      type: driver.type,
+      score: driver.score,
+      contributions: getContributions(driver, tasks, contributionLinks),
+      contributesTo: getContributesTo(driver, tasks, contributionLinks),
     });
   }
 

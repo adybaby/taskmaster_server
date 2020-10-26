@@ -22,7 +22,7 @@ const user = Mongoose.Schema({
   bio: {
     type: String,
   },
-  skills: {
+  skillIds: {
     type: Array,
   },
   available: {

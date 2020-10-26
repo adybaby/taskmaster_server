@@ -1,5 +1,6 @@
 import { TYPES } from './Types';
 import * as logger from './util/Logger';
+import { resetTypeToJsonFile } from '../jsontest/JsonLoader';
 
 const updateOptions = {
   new: true,
@@ -19,9 +20,32 @@ const deleteById = (id, type) =>
       })
       .catch((e) => {
         logger.error(e);
-        reject(new Error('Could not delete ' + type + ' with id ' + id));
+        reject(new Error('Could not delete ' + type + ' from entity cache with id ' + id));
       });
   });
+
+const initialiseType = (type) =>
+  new Promise((resolve, reject) => {
+    logger.log('Initialising ' + type.id + ' entitiy cache..');
+    type.entity
+      .find({})
+      .then((entities) => {
+        cache[type.id] = entities.map((e) => e.toObject());
+        logger.log(
+          'Initialised entity cache with ' + cache[type.id].length + ' ' + type.id + '(s)'
+        );
+        resolve();
+      })
+      .catch((e) => {
+        logger.error(e);
+        reject(new Error('Could not initialise entity cache for ' + type));
+      });
+  });
+
+const initialise = () => {
+  cache = {};
+  return Promise.all(Object.values(TYPES).map((t) => initialiseType(t)));
+};
 
 const upsert = (params, type) =>
   new Promise((resolve, reject) => {
@@ -35,34 +59,17 @@ const upsert = (params, type) =>
         } else {
           cache[type.id].push(newElement);
         }
-        resolve(newElement);
+        if (type.postFetch != null) {
+          cache[type.id] = type.postFetch(cacheExport, cache[type.id]);
+        }
+        let res = cache[type.id].find((e) => e.id === update.id);
+        resolve(type.expand != null ? type.expand(cacheExport, res) : res);
       })
       .catch((e) => {
         logger.error(e);
         reject(new Error('Could not upsert ' + type + ' with params ' + params));
       });
   });
-
-const initialiseType = (type) =>
-  new Promise((resolve, reject) => {
-    logger.log('Initialising ' + type.id);
-    type.entity
-      .find({})
-      .then((entities) => {
-        cache[type.id] = entities.map((e) => e.toObject());
-        logger.log('Initialised ' + cache[type.id].length + ' of type ' + type.id);
-        resolve();
-      })
-      .catch((e) => {
-        logger.error(e);
-        reject(new Error('Could not initialise cache for ' + type));
-      });
-  });
-
-const initialise = () => {
-  cache = {};
-  return Promise.all(Object.values(TYPES).map((t) => initialiseType(t)));
-};
 
 const entities = (type) => cache[type.id];
 
@@ -71,21 +78,36 @@ const refresh = (type, entities) => {
 };
 
 const deleteOne = (id, type) =>
-  type.deleteOne == null
-    ? deleteById(type, id)
-    : type.deleteOne({ entities, refresh, deleteOne, upsert }, id);
+  type.deleteOne == null ? deleteById(id, type) : type.deleteOne(cacheExport, id);
+
+const dbUpdates = () => {
+  // intentionally empty. used to insert db resets via json files for testing if needed
+  return resetTypeToJsonFile(null, upsert);
+};
+
+const postFetchActions = () => {
+  Object.values(TYPES).forEach((type) => {
+    if (type.postFetch != null) {
+      cache[type.id] = type.postFetch(cacheExport, cache[type.id]);
+    }
+  });
+};
+
+const cacheExport = { entities, refresh, deleteOne, upsert };
 
 export const getCache = async () => {
   if (cache == null) {
     try {
-      logger.log('Initialising cache..');
+      logger.log('Initialising entity cache..');
       await initialise();
-      logger.log('The cache has been initialised. ');
+      await dbUpdates();
+      postFetchActions();
+      logger.log('The entity cache has been initialised. ');
     } catch (e) {
       cache = null;
       logger.error(e);
       Promise.reject(new Error('Could not initialise entity cache.'));
     }
   }
-  return { entities, refresh, deleteOne, upsert };
+  return cacheExport;
 };

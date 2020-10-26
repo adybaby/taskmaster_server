@@ -59,13 +59,33 @@ export const expandTask = (cache, task) => {
   };
 };
 
+const formatPriority = (task) => {
+  const ordinal = (i) => {
+    var j = i % 10,
+      k = i % 100;
+    if (j == 1 && k != 11) {
+      return i + 'st';
+    }
+    if (j == 2 && k != 12) {
+      return i + 'nd';
+    }
+    if (j == 3 && k != 13) {
+      return i + 'rd';
+    }
+    return i + 'th';
+  };
+
+  const camel = (s) => s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
+
+  return ordinal(task.priority) + ' ' + camel(task.type);
+};
+
 export const summariseTask = (cache, task) => {
   const summary = [
-    task.type +
-      ' (ID:' +
+    ' (ID:' +
       task.id +
       ', Priority: ' +
-      task.priority +
+      formatPriority(task) +
       ') created by ' +
       formatUserName(cache.entities(TYPES.USER).find((user) => user.id === task.createdBy)) +
       ' on ' +
@@ -89,7 +109,7 @@ export const summariseTask = (cache, task) => {
 
   const requiredSkills = getRequiredSkills(cache, task);
 
-  if (requiredSkills !== 0) {
+  if (requiredSkills.length !== 0) {
     summary.push('Vacancies: ' + requiredSkills.map((rs) => capitalize(rs.title)).join(', '));
   }
 
@@ -149,3 +169,54 @@ export const deleteTask = (cache, id) =>
         reject(new Error('Could not delete task with id ' + id + '. ' + e.message));
       });
   });
+
+export const prioritiseTasks = (cache, tasks) => {
+  const CONTRIBUTION_MULTIPLIERS = {
+    Minor: { multiplier: 11, displayName: 'Partial Contributor' },
+    DeRisking: { multiplier: 12, displayName: 'Derisking Contributor' },
+    Major: { multiplier: 15, displayName: 'Major Contributor' },
+  };
+
+  const scoresByType = {
+    DRIVER: { parentType: null, scores: {} },
+    ENABLER: { parentType: 'DRIVER', scores: {} },
+    INITIATIVE: { parentType: 'ENABLER', scores: {} },
+  };
+
+  const calcScore = (task) => {
+    let score = task.score != null ? task.score : 0;
+
+    const scoresForType = scoresByType[task.type];
+    const parent = scoresByType[scoresForType.parentType];
+
+    if (parent != null) {
+      cache
+        .entities(TYPES.CONTRIBUTION_LINK)
+        .filter((contirbutionLink) => contirbutionLink.contributorId === task.id)
+        .forEach((contributesTo) => {
+          score +=
+            parent.scores[contributesTo.contributeeId] *
+            CONTRIBUTION_MULTIPLIERS[contributesTo.contribution].multiplier;
+        });
+    }
+    scoresForType.scores[task.id] = score;
+  };
+
+  const calcPriorities = (type) => {
+    tasks
+      .filter((task) => task.type === type)
+      .forEach((task) => {
+        calcScore(task);
+      });
+
+    return Object.entries(scoresByType[type].scores)
+      .sort((a, b) => b[1] - a[1])
+      .map((entry, index) => ({ id: entry[0], priority: index + 1 }));
+  };
+
+  const order = calcPriorities('DRIVER');
+  order.push(...calcPriorities('ENABLER'));
+  order.push(...calcPriorities('INITIATIVE'));
+
+  return tasks.map((task) => ({ ...task, priority: order.find((o) => o.id === task.id).priority }));
+};

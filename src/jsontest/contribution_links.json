@@ -1,0 +1,87 @@
+[
+  { "id": "1", "contributorId": "4", "contributeeId": "3", "contribution": "Major" },
+  { "id": "2", "contributorId": "5", "contributeeId": "3", "contribution": "Major" },
+  { "id": "3", "contributorId": "7", "contributeeId": "1", "contribution": "Minor" },
+  { "id": "4", "contributorId": "8", "contributeeId": "1", "contribution": "Minor" },
+  { "id": "5", "contributorId": "9", "contributeeId": "2", "contribution": "Major" },
+  { "id": "6", "contributorId": "10", "contributeeId": "2", "contribution": "Minor" },
+  { "id": "7", "contributorId": "11", "contributeeId": "2", "contribution": "Minor" },
+  { "id": "8", "contributorId": "12", "contributeeId": "5", "contribution": "Minor" },
+  { "id": "9", "contributorId": "13", "contributeeId": "5", "contribution": "Minor" },
+  { "id": "10", "contributorId": "14", "contributeeId": "5", "contribution": "Major" },
+  { "id": "11", "contributorId": "15", "contributeeId": "4", "contribution": "Major" },
+  { "id": "12", "contributorId": "16", "contributeeId": "4", "contribution": "Major" },
+  { "id": "13", "contributorId": "17", "contributeeId": "4", "contribution": "Major" },
+  {
+    "id": "14",
+    "contributorId": "18",
+    "contributeeId": "4",
+    "contribution": "DeRisking"
+  },
+  { "id": "15", "contributorId": "19", "contributeeId": "4", "contribution": "Major" },
+  { "id": "16", "contributorId": "20", "contributeeId": "4", "contribution": "Minor" },
+  { "id": "17", "contributorId": "21", "contributeeId": "4", "contribution": "Minor" },
+  {
+    "id": "18",
+    "contributorId": "22",
+    "contributeeId": "4",
+    "contribution": "DeRisking"
+  },
+  { "id": "19", "contributorId": "23", "contributeeId": "7", "contribution": "Minor" },
+  {
+    "id": "20",
+    "contributorId": "24",
+    "contributeeId": "7",
+    "contribution": "DeRisking"
+  },
+  { "id": "21", "contributorId": "25", "contributeeId": "7", "contribution": "Major" },
+  { "id": "22", "contributorId": "25", "contributeeId": "9", "contribution": "Minor" },
+  { "id": "23", "contributorId": "26", "contributeeId": "7", "contribution": "Minor" },
+  { "id": "24", "contributorId": "26", "contributeeId": "9", "contribution": "Minor" },
+  {
+    "id": "25",
+    "contributorId": "27",
+    "contributeeId": "8",
+    "contribution": "DeRisking"
+  },
+  { "id": "26", "contributorId": "27", "contributeeId": "9", "contribution": "Minor" },
+  {
+    "id": "27",
+    "contributorId": "28",
+    "contributeeId": "8",
+    "contribution": "DeRisking"
+  },
+  { "id": "28", "contributorId": "29", "contributeeId": "9", "contribution": "Major" },
+  { "id": "29", "contributorId": "30", "contributeeId": "9", "contribution": "Major" },
+  {
+    "id": "30",
+    "contributorId": "31",
+    "contributeeId": "9",
+    "contribution": "DeRisking"
+  },
+  {
+    "id": "31",
+    "contributorId": "32",
+    "contributeeId": "10",
+    "contribution": "Minor"
+  },
+  {
+    "id": "32",
+    "contributorId": "33",
+    "contributeeId": "10",
+    "contribution": "Minor"
+  },
+  {
+    "id": "33",
+    "contributorId": "34",
+    "contributeeId": "11",
+    "contribution": "Major"
+  },
+  {
+    "id": "34",
+    "contributorId": "35",
+    "contributeeId": "11",
+    "contribution": "Minor"
+  },
+  { "id": "35", "contributorId": "36", "contributeeId": "11", "contribution": "Minor" }
+]

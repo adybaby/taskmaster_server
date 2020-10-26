@@ -1,15 +1,10 @@
-// is get user getting signups
-// out of range user returns weird string
-// task username for interest returns full user
-// chart with params cannot read property title
-
 import { ACTIONS } from './Actions';
 import { TYPES } from './Types';
 import { getCache } from './EntityCache';
-import { getChart } from './ChartActions';
 import { getMap } from './MapActions';
 import { expandUser } from './UserActions';
 import { expandTask, summariseTask } from './TaskActions';
+import { populateChartCache, getChartData } from './ChartCache';
 import * as logger from './util/Logger';
 
 let cache = null;
@@ -17,6 +12,9 @@ let cache = null;
 const checkCache = async () => {
   if (cache == null) {
     cache = await getCache();
+    logger.debug('Initialising Chart Cache..');
+    populateChartCache(cache);
+    logger.debug('Initialised Chart Cache');
   }
 };
 
@@ -136,7 +134,7 @@ export const query = (req, res) => {
           case ACTIONS.GET_CHART:
             try {
               logger.debug('Restrieving chart..');
-              const response = getChart(cache, params == null ? {} : params);
+              const response = getChartData(params.filterDateRange);
               logger.debug('Responding with chart.', response);
               res.json(response);
             } catch (e) {
@@ -266,6 +264,45 @@ export const query = (req, res) => {
               errorResponse(e);
             }
             break;
+          case ACTIONS.SET_CONTRIBUTIONS:
+            try {
+              if (haveParams({ params })) {
+                logger.debug('Setting contributions for task with id ' + params.id);
+
+                Promise.all(
+                  cache
+                    .entities(TYPES.CONTRIBUTION_LINK)
+                    .filter((e) => e.contributorId === params.id || e.contributeeId === params.id)
+                    .map((link) => cache.deleteOne(link.id, TYPES.CONTRIBUTION_LINK))
+                )
+                  .then(() => {
+                    Promise.all(
+                      params.newLinks.map((doc) => cache.upsert(doc, TYPES.CONTRIBUTION_LINK))
+                    )
+                      .then((newElements) => {
+                        logger.debug(
+                          'Upserted contribution links with ' +
+                            newElements.length +
+                            ' new documents',
+                          newElements
+                        );
+                        res.json(newElements);
+                      })
+                      .catch((e) => {
+                        logger.error(e);
+                        errorResponse(e);
+                      });
+                  })
+                  .catch((e) => {
+                    logger.error(e);
+                    errorResponse(e);
+                  });
+              }
+            } catch (e) {
+              logger.error(e);
+              errorResponse(e);
+            }
+            break;
           case ACTIONS.DELETE:
             try {
               if (haveParams({ id, type })) {
@@ -292,11 +329,11 @@ export const query = (req, res) => {
         }
       } catch (e) {
         logger.error(e);
-        errorResponse(e);
+        res.status(500).json('The server encountered an unknown error: ' + e.message);
       }
     })
     .catch((e) => {
       logger.error(e);
-      errorResponse(e);
+      res.status(500).json('The server encountered an unknown error: ' + e.message);
     });
 };

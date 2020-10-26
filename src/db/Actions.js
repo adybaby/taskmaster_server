@@ -10,4 +10,5 @@ export const ACTIONS = {
   UPSERT: 'upsert',
   UPSERT_MANY: 'upsertMany',
   DELETE: 'delete',
+  SET_CONTRIBUTIONS: 'setContributions',
 };

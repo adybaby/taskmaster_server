@@ -1,0 +1,11 @@
+[
+  { "id": "1", "title": "designer" },
+  { "id": "2", "title": "developer" },
+  { "id": "3", "title": "researcher" },
+  { "id": "4", "title": "marketing" },
+  { "id": "5", "title": "PM" },
+  { "id": "6", "title": "logistics" },
+  { "id": "7", "title": "supply" },
+  { "id": "8", "title": "HR" },
+  { "id": "9", "title": "customer" }
+]

@@ -44,6 +44,10 @@ Delete an entity of the given type with the given id
 action: delete
 type: task|vacancy|skill|interest|contribution|user
 id
+
+Replace all contribution links for a give task id with the provided ones
+action: setContributions
+params: {id ,newLinks:[id, ...] }
  */
 
 module.exports = function routes(app) {

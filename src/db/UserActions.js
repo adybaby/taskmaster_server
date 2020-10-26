@@ -34,6 +34,22 @@ const getActions = (cache, user) => {
   return actions;
 };
 
+const getPOCs = (cache, user) =>
+  cache
+    .entities(TYPES.VACANCY)
+    .filter((v) => v.recruiterId === user.id)
+    .reduce((pocTasks, vacancy) => {
+      const pocTask = {
+        id: vacancy.taskId,
+        title: cache.entities(TYPES.TASK).find((t) => t.id === vacancy.taskId).title,
+      };
+      if (!pocTasks.find((t) => t.id === pocTask.id)) {
+        return [...pocTasks, pocTask];
+      } else {
+        return pocTasks;
+      }
+    }, []);
+
 const getSignedUp = (cache, user) =>
   cache
     .entities(TYPES.INTEREST)
@@ -59,10 +75,13 @@ const getSignedUp = (cache, user) =>
 
 export const expandUser = (cache, user) => ({
   ...user,
-  skills: user.skills.map((userSkillId) => ({
-    id: userSkillId,
-    title: cache.entities(TYPES.SKILL).find((s) => s.id === userSkillId).title,
-  })),
+  skills: user.skillIds.map((userSkillId) => {
+    const skill = cache.entities(TYPES.SKILL).find((s) => s.id === userSkillId);
+    return {
+      id: userSkillId,
+      title: skill.title,
+    };
+  }),
   authored: cache
     .entities(TYPES.TASK)
     .filter((t) => t.createdBy === user.id)
@@ -72,6 +91,7 @@ export const expandUser = (cache, user) => ({
     })),
   signedUp: getSignedUp(cache, user),
   actions: getActions(cache, user),
+  poc: getPOCs(cache, user),
 });
 
 export const deleteUser = (cache, id) =>

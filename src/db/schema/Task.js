@@ -27,8 +27,8 @@ const task = Mongoose.Schema({
   tags: {
     type: Array,
   },
-  priority: {
-    type: String,
+  score: {
+    type: Number,
   },
   hypotheses: {
     type: String,
